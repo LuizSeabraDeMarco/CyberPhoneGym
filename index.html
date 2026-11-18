@@ -755,70 +755,12 @@ h2{
  line-height:.78;
  letter-spacing:-.065em;
  color:transparent;
-
- background:repeating-linear-gradient(
-  to bottom,
-  #F4F4F2 0px,
-  #F4F4F2 3px,
-  transparent 3px,
-  transparent 6px
-  
- );
- 
-
+ background:repeating-linear-gradient(to bottom,#F4F4F2 0 3px,transparent 3px 6px);
  -webkit-background-clip:text;
  background-clip:text;
-
-opacity: 0;
-filter: blur(5px);
-transform: translateY(0);
-
-transition:
- opacity .15s linear,
- filter .15s linear;
-
-animation: scan-drift 7s ease-in-out infinite;
-
-
-@keyframes scan-reveal{
- to{
-  opacity:var(--row-opacity,1);
-  filter:blur(0);
-  transform:translateY(0);
- }
-}
-
-@keyframes scan-drift{
- 0%,100%{
-  transform:translateX(0) skewX(0deg)
- }
- 25%{
-  transform:translateX(-5px) skewX(-.5deg)
- }
- 50%{
-  transform:translateX(3px) skewX(.3deg)
- }
- 75%{
-  transform:translateX(-2px) skewX(-.2deg)
- }
-}
-@keyframes scan-drift{
-
- 0%,100%{
-  transform:translateX(0) skewX(0deg)
- }
-
- 25%{
-  transform:translateX(-5px) skewX(-.5deg)
- }
-
- 50%{
-  transform:translateX(3px) skewX(.3deg)
- }
-
- 75%{
-  transform:translateX(-2px) skewX(-.2deg)
- }
+ opacity:0;
+ filter:blur(3px);
+ transition:opacity .2s linear,filter .2s linear;
 }
 
 @media(max-width:600px){
@@ -1162,7 +1104,7 @@ animation: scan-drift 7s ease-in-out infinite;
 const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 
-const reduce = false;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const NAMES=[
  'BOOT.SYS',
  'SYSTEM',
@@ -1437,10 +1379,6 @@ function dev(id,full){
     <feGaussianBlur stdDeviation="3"/>
    </filter>
 
-   <filter id="gr${id}">
-    <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2"/>
-    <feColorMatrix type="matrix" values="0 0 0 0 .9  0 0 0 0 .9  0 0 0 0 .9  0 0 0 .9 -.25"/>
-   </filter>
 
    <g id="in${id}">${INT}</g>
 
@@ -1460,7 +1398,6 @@ function dev(id,full){
 
    <rect x="26" y="30" width="288" height="372" fill="url(#fr${id})"/>
 
-   <rect x="26" y="30" width="288" height="372" filter="url(#gr${id})" opacity=".14"/>
 
    <path d="M26 30H210L26 230Z" fill="url(#rf${id})"/>
 
@@ -1756,14 +1693,6 @@ function layout(){
 
 function go(i){
 
- if(reduce){
-
-  lv[i].scrollIntoView();
-
-  return;
-
- }
-
  scrollTo({
   top:i*per,
   behavior:'smooth'
@@ -1794,7 +1723,7 @@ let W,H;
 
 function size(){
 
- const d=Math.min(devicePixelRatio||1,1.5);
+ const d=Math.min(devicePixelRatio||1,1);
 
  W=cv.width=innerWidth*d;
  H=cv.height=innerHeight*d;
@@ -1812,7 +1741,7 @@ const rnd=()=>(
 )/2147483647;
 
 const STARS=Array.from(
- {length:matchMedia('(max-width:860px)').matches?170:300},
+ {length:matchMedia('(max-width:860px)').matches?90:150},
  ()=>({
   x:rnd()*2-1,
   y:rnd()*2-1,
@@ -1913,9 +1842,17 @@ if(dbg!==null){
 
  Lt=Ls=+dbg;
 
-}else if(!reduce){
+}else{
 
  addEventListener('scroll',readScroll,{passive:true});
+ let settleTimer;
+ addEventListener('scroll',()=>{
+  clearTimeout(settleTimer);
+  settleTimer=setTimeout(()=>{
+   const target=Math.round(clamp(scrollY/per,0,N-1));
+   if(Math.abs(scrollY-target*per)>innerHeight*.08) go(target);
+  },220);
+ },{passive:true});
 
  readScroll();
 
@@ -2088,17 +2025,25 @@ function updateLight(progress){
    MAIN ANIMATION LOOP
 ========================================= */
 
+let lastFrame=0;
 function frame(ms){
 
+ if(document.hidden){
+  requestAnimationFrame(frame);
+  return;
+ }
+ if(ms-lastFrame<33){
+  requestAnimationFrame(frame);
+  return;
+ }
+ lastFrame=ms;
  const t=ms/1000;
 
  // Suavização da posição da câmera.
  Ls+=(Lt-Ls)*(dbg!==null?1:.09);
 
  // Transições entre os níveis.
- if(!reduce||dbg!==null){
-  apply(Ls);
- }
+ apply(Ls);
 
  // EFEITO 1:
  // Revelação progressiva das cinco linhas do header.
@@ -2114,9 +2059,7 @@ updateLight(Ls);
  sky(t,Ls);
  driveDev(t);
 
- if(!reduce){
-  requestAnimationFrame(frame);
- }
+ requestAnimationFrame(frame);
 
 }
 
@@ -2126,42 +2069,9 @@ updateLight(Ls);
 size();
 
 if(reduce){
-
- document.documentElement.classList.add('flat');
-
- last=0;
-
  $('hl').textContent='LV 01 / BOOT.SYS';
-
- frame(0);
-
-}else{
-
- requestAnimationFrame(frame);
-
 }
-size();
-
-if (dbg === null) {
-    Lt = 0;
-    Ls = 0;
-}
-
-if(reduce){
-
-    document.documentElement.classList.add('flat');
-
-    last=0;
-
-    $('hl').textContent='LV 01 / BOOT.SYS';
-
-    frame(0);
-
-}else{
-
-    requestAnimationFrame(frame);
-
-}
+requestAnimationFrame(frame);
 </script>
 
 </body>
