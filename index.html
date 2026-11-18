@@ -933,6 +933,37 @@ h2{
  #screen-nav button{min-height:36px}
 }
 
+
+/* MOBILE PAGE NAVIGATION: large, fixed, easy-to-tap controls */
+@media(max-width:700px){
+ .lv{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+ #screen-nav{
+  left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));
+  width:auto;transform:none;display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:stretch;gap:8px;padding:7px;
+  min-height:70px;border:1px solid var(--o);
+  background:rgba(5,5,5,.97);box-shadow:0 0 18px rgba(0,0,0,.75);
+ }
+ #screen-nav button{
+  min-width:0;min-height:54px;padding:10px 12px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border:1px solid var(--g3);background:#111;color:var(--w);
+  font-size:12px;letter-spacing:.04em;touch-action:manipulation;
+ }
+ #screen-nav button span{display:inline}
+ #screen-nav button:hover:not(:disabled),
+ #screen-nav button:active:not(:disabled){background:var(--w);color:var(--k)}
+ #screen-nav button:disabled{opacity:.38;background:#090909}
+ #screen-nav button:first-child{justify-self:stretch}
+ #screen-nav button:last-child{justify-self:stretch}
+ #screen-count{align-self:center;min-width:5em;font-size:11px;color:var(--w)}
+}
+@media(max-width:700px) and (max-height:500px){
+ .lv{padding-bottom:66px}
+ #screen-nav{bottom:5px;min-height:48px;padding:4px}
+ #screen-nav button{min-height:38px;font-size:10px}
+}
+
 </style>
 </head>
 
@@ -958,9 +989,9 @@ h2{
 <ul id="ticks" aria-label="Levels"></ul>
 
 <nav id="screen-nav" aria-label="Screen navigation">
- <button type="button" id="prev-screen" aria-label="Previous screen">← <span>PREVIOUS</span></button>
+ <button type="button" id="prev-screen" aria-label="Tela anterior">← <span>ANTERIOR</span></button>
  <span id="screen-count" aria-live="polite">01 / 07</span>
- <button type="button" id="next-screen" aria-label="Next screen"><span>NEXT</span> →</button>
+ <button type="button" id="next-screen" aria-label="Próxima tela"><span>PRÓXIMA</span> →</button>
 </nav>
 
 <main id="stage">
