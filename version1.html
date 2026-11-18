@@ -5,184 +5,176 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CYBERPLAYER</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <style>
-:root{--bg:#07080c;--graphite:#14161d;--cyan:#22f0ff;--blue:#3b6bff;--violet:#8a4dff;--magenta:#ff3fb4;--text:#e9edf5;--mute:#8b93a7;--led:#22f0ff;
---glass:rgba(255,255,255,.055);--edge:rgba(255,255,255,.16);
---display:'Unbounded','Arial Black',system-ui,sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif}
+:root{--led:#19e6ff;--bg:#000;--text:#f2f4f8;--mute:#8f98a8;--line:rgba(255,255,255,.14);--f:'Archivo','Helvetica Neue',Arial,sans-serif}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font:400 1.05rem/1.65 var(--body);overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font:400 1.05rem/1.6 var(--f);overflow-x:hidden}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:28px;align-items:center;padding:10px 12px 10px 24px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);font-size:.9rem;white-space:nowrap}
-nav b{font:800 .85rem var(--display);letter-spacing:.12em}
-nav a{text-decoration:none;color:var(--mute);transition:color .2s}nav a:hover{color:var(--text)}
-.btn{display:inline-block;text-decoration:none;font:600 .9rem var(--body);padding:14px 28px;border-radius:999px;color:#04060a;background:linear-gradient(120deg,var(--cyan),var(--blue) 60%,var(--violet));box-shadow:0 0 32px rgba(34,240,255,.35);transition:transform .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(34,240,255,.6)}
-nav .btn{padding:9px 20px;color:#04060a}
-.ghost{background:var(--glass);color:var(--text);box-shadow:none;border:1px solid var(--edge)}
-h1,h2,h3{font-family:var(--display);line-height:1.08;font-weight:800}
-h1{font-size:clamp(2.1rem,5.4vw,4.4rem);letter-spacing:-.02em}
-h2{font-size:clamp(1.6rem,3.6vw,2.7rem);letter-spacing:-.015em;margin-bottom:20px}
-h3{font-size:1.05rem;font-weight:600;margin-bottom:8px}
-p.lead{color:var(--mute);max-width:52ch;font-size:1.15rem}
-section{padding:120px 0;position:relative}
-.grad{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+:focus-visible{outline:2px solid var(--led);outline-offset:3px}
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(60vmax 60vmax at var(--gx,70%) var(--gy,50%),color-mix(in srgb,var(--led) 16%,transparent),transparent 60%);transition:background .6s}
+#gl{position:fixed;inset:0;width:100vw;height:100vh;z-index:2;pointer-events:none}
+#lines{position:fixed;inset:0;width:100vw;height:100vh;z-index:3;pointer-events:none}
+#lines line{stroke:var(--led);stroke-width:1}
+#lines circle{fill:var(--led)}
+.tag{position:fixed;left:0;top:0;z-index:4;width:178px;opacity:0;pointer-events:none;font-size:.78rem;line-height:1.35;color:var(--mute);padding-bottom:8px;border-bottom:1px solid var(--led)}
+.tag b{display:block;color:var(--text);font-weight:600;font-size:.86rem}
+.tag.l{text-align:right}
+.nogl-msg{display:none}
+.nogl #gl,.nogl #lines{display:none}
+.nogl .nogl-msg{display:block;position:fixed;right:24px;bottom:24px;z-index:5;font-size:.8rem;color:var(--mute);max-width:260px}
 
-/* HERO */
-.hero{min-height:100vh;display:grid;align-items:center;padding:120px 0 60px}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.brand{font:800 clamp(.8rem,1.6vw,1rem) var(--display);letter-spacing:.5em;color:var(--cyan);margin-bottom:22px}
-.hero p.lead{margin:24px 0 36px}
-.cta{display:flex;gap:14px;flex-wrap:wrap}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:22px clamp(20px,4vw,48px);font-size:.88rem}
+nav b{font-weight:800;font-stretch:125%;letter-spacing:.04em}
+nav div{display:flex;gap:30px;align-items:center}
+nav a{text-decoration:none;color:var(--mute);background:linear-gradient(var(--led),var(--led)) 0 100%/0 1px no-repeat;transition:color .2s,background-size .25s}
+nav a:hover{color:var(--text);background-size:100% 1px}
+.btn{display:inline-block;text-decoration:none;font:600 .95rem var(--f);color:#000;background:var(--led);padding:15px 34px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));transition:filter .2s,background .5s}
+.btn:hover{filter:brightness(1.15)}
+nav .btn{padding:10px 24px;color:#000}
+.link{font-weight:500;color:var(--text);text-decoration:none;border-bottom:1px solid var(--led);padding-bottom:3px}
 
-/* DEVICE */
-.stage{display:grid;place-items:center;perspective:1100px}
-.device{position:relative;width:min(300px,70vw);aspect-ratio:9/16;border-radius:44px;background:linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.03) 45%,rgba(138,77,255,.12));border:1px solid var(--edge);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 6px rgba(255,255,255,.03),inset 0 1px 0 rgba(255,255,255,.5),0 40px 90px rgba(0,0,0,.7),0 0 80px color-mix(in srgb,var(--led) 35%,transparent);transform-style:preserve-3d;transition:transform .15s ease-out,box-shadow .4s;animation:float 6s ease-in-out infinite}
-@keyframes float{50%{translate:0 -12px}}
-.device::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 45%,transparent 58%);mix-blend-mode:screen;pointer-events:none;animation:sheen 7s linear infinite}
-@keyframes sheen{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
-.device svg.pcb{position:absolute;inset:26px;width:calc(100% - 52px);height:calc(100% - 52px);opacity:.5}
-.screen{position:absolute;left:22px;right:22px;top:26px;height:38%;border-radius:26px;background:rgba(4,8,14,.78);border:1px solid var(--edge);padding:18px;display:flex;flex-direction:column;justify-content:space-between;font-size:.72rem;color:var(--mute)}
-.screen b{display:block;color:var(--text);font:600 .95rem var(--display)}
-.bars{display:flex;gap:4px;align-items:flex-end;height:42px}
-.bars i{flex:1;background:var(--led);border-radius:2px;animation:eq 1.1s ease-in-out infinite alternate;box-shadow:0 0 10px var(--led)}
-.bars i:nth-child(2n){animation-delay:-.4s}.bars i:nth-child(3n){animation-delay:-.7s}.bars i:nth-child(5n){animation-delay:-.2s}
-@keyframes eq{from{height:15%}to{height:100%}}
-.wheel{position:absolute;left:50%;bottom:11%;width:46%;aspect-ratio:1;translate:-50% 0;border-radius:50%;border:1px solid var(--edge);background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);display:grid;place-items:center}
-.wheel::after{content:"";width:34%;aspect-ratio:1;border-radius:50%;border:1px solid var(--edge);background:rgba(255,255,255,.05)}
-.led{position:absolute;left:14px;right:14px;bottom:14px;height:4px;border-radius:4px;background:var(--led);box-shadow:0 0 16px var(--led),0 0 40px var(--led);transition:background .4s,box-shadow .4s}
-.swatches{display:flex;gap:12px;margin-top:34px;align-items:center;color:var(--mute);font-size:.85rem}
-.sw{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:transform .2s}
-.sw:hover,.sw[aria-pressed=true]{transform:scale(1.2);border-color:#fff}
+h1,h2{font-weight:800;font-stretch:118%;line-height:.98;letter-spacing:-.015em}
+h1{font-size:clamp(1.9rem,4.3vw,3.7rem)}
+h2{font-size:clamp(1.7rem,3.4vw,2.9rem);margin-bottom:22px}
+p.lead{color:var(--mute);max-width:44ch;font-size:1.08rem}
+.wrap{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+section{position:relative;z-index:1;padding:150px 0}
+.col{max-width:430px}
+.r{margin-left:auto}
 
-/* GLASS */
-.glass{background:var(--glass);border:1px solid var(--edge);border-radius:28px;padding:32px;backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
-.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.facts .glass{padding:22px}
-.facts p{color:var(--mute);font-size:.92rem;line-height:1.5}
-.list{list-style:none;padding:0;display:grid;gap:14px;margin-top:28px}
-.list li{padding-left:28px;position:relative;color:var(--mute)}
-.list li::before{content:"";position:absolute;left:0;top:.6em;width:12px;height:2px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
-.list b{color:var(--text);font-weight:500}
-.ad{display:flex;flex-direction:column;gap:12px}
-.track{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--edge);font-size:.95rem}
-.track small{color:var(--mute)}
-.track.skip{opacity:.4;text-decoration:line-through;border-style:dashed}
-.track.on{border-color:var(--cyan);box-shadow:0 0 24px rgba(34,240,255,.2)}
+#hero{min-height:100vh;padding:0;overflow:hidden;display:flex;align-items:center}
+#hero .wrap{width:100%;padding-top:70px}
+#hero p.lead{margin:28px 0 34px}
+.cta{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.mark{position:absolute;left:0;right:0;bottom:0;z-index:1;text-align:center;font-weight:800;font-stretch:125%;font-size:11.2vw;line-height:.78;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.28);transform:translateY(14%);white-space:nowrap;user-select:none}
 
-/* ECOSYSTEM */
-.eco{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;margin-top:40px}
+section.tall{height:270vh;padding:0}
+.stick{position:sticky;top:0;height:100vh;display:flex;align-items:center}
+.stick .wrap{width:100%}
+.ph{grid-area:1/1;transition:opacity .45s,transform .45s}
+.stage{display:grid}
+.ph.b{opacity:0;transform:translateY(14px);pointer-events:none}
+body.back .ph.a{opacity:0;transform:translateY(-14px);pointer-events:none}
+body.back .ph.b{opacity:1;transform:none;pointer-events:auto}
+.leds{display:flex;gap:14px;align-items:center;margin-top:34px;color:var(--mute);font-size:.88rem}
+.sw{width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;outline:2px solid transparent;outline-offset:4px;transition:outline-color .2s}
+.sw[aria-pressed=true]{outline-color:#fff}
+
+.strips{margin-top:44px;display:grid;gap:26px;max-width:560px}
+.strips small{display:block;color:var(--mute);font-size:.82rem;margin-bottom:8px}
+.bar{display:flex;gap:3px;height:34px}
+.bar i{display:block;background:var(--led);transition:background .5s}
+.bar i.ad{background:repeating-linear-gradient(135deg,#444 0 4px,#1a1a1a 4px 8px)}
+.lines{list-style:none;padding:0;margin-top:34px;display:grid;gap:16px;max-width:44ch}
+.lines li{border-top:1px solid var(--line);padding-top:14px;color:var(--mute)}
+.lines b{color:var(--text);font-weight:600}
+
+.steps{display:grid;gap:0;margin-top:44px;max-width:440px}
+.steps div{display:grid;grid-template-columns:44px 1fr;border-top:1px solid var(--line);padding:18px 0;color:var(--mute)}
+.steps b{color:var(--text);font-weight:600;display:block}
+.steps span{color:var(--led);font-weight:700;transition:color .5s}
+
+.eco{display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:center;margin-top:48px}
 #map{width:100%;height:auto;overflow:visible}
 .node{cursor:pointer}
-.node circle{fill:rgba(20,22,29,.85);stroke:rgba(255,255,255,.25);stroke-width:1.5;transition:stroke .25s,filter .25s}
-.node text{fill:var(--text);font:500 13px var(--body);text-anchor:middle;pointer-events:none}
-.node.active circle,.node:hover circle,.node:focus-visible circle{stroke:var(--cyan);filter:drop-shadow(0 0 12px var(--cyan))}
-.link{stroke:rgba(255,255,255,.18);stroke-width:1.5;stroke-dasharray:4 6;animation:dash 2s linear infinite}
-.link.active{stroke:var(--cyan)}
-@keyframes dash{to{stroke-dashoffset:-20}}
-.core circle{stroke:var(--violet);fill:rgba(138,77,255,.15)}
-#info{min-height:210px}
+.node circle{fill:#000;stroke:rgba(255,255,255,.3);stroke-width:1;transition:stroke .25s,fill .25s}
+.node text{fill:var(--text);font:500 12.5px var(--f);text-anchor:middle;pointer-events:none}
+.node.active circle,.node:focus-visible circle{stroke:var(--led);fill:color-mix(in srgb,var(--led) 14%,#000)}
+.edge{stroke:rgba(255,255,255,.2);stroke-width:1}
+.edge.on{stroke:var(--led);stroke-dasharray:5 6;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-22}}
+#info{border-left:1px solid var(--led);padding-left:24px;min-height:150px}
+#info b{display:block;font-size:1.15rem;margin-bottom:8px}
 #info p{color:var(--mute)}
 
-/* FINAL */
-.final{text-align:center;padding:160px 0}
-.final p.lead{margin:0 auto 40px}
-footer{padding:40px 0;text-align:center;color:var(--mute);font-size:.85rem;border-top:1px solid rgba(255,255,255,.08)}
+section.final{min-height:100vh;display:flex;align-items:flex-end;text-align:center;padding:0 0 12vh}
+.final .wrap{width:100%}
+.final h2{font-size:clamp(2rem,5.6vw,4.8rem);margin-bottom:18px}
+.final p.lead{margin:0 auto 34px}
+footer{position:relative;z-index:1;padding:28px;text-align:center;color:var(--mute);font-size:.8rem;border-top:1px solid var(--line)}
 
 @media(max-width:860px){
- nav a:not(.btn){display:none}nav{gap:16px}
- .hero .wrap,.split,.eco{grid-template-columns:1fr}
- section{padding:80px 0}
+ nav div a:not(.btn){display:none}
+ .eco{grid-template-columns:1fr}
+ .tag{display:none}
+ section{padding:100px 0}
+ .col,.stick .col{background:linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.4));padding:18px;margin-left:0;border-left:1px solid var(--line)}
+ #hero{align-items:flex-start}
+ #hero .wrap{padding-top:110px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<canvas id="bg" aria-hidden="true"></canvas>
+<div class="glow" id="glow"></div>
+<canvas id="gl" aria-hidden="true"></canvas>
+<svg id="lines" aria-hidden="true"></svg>
+<div class="nogl-msg">The 3D device needs WebGL and an internet connection to load. Open the file in a current browser, or serve it with Live Server.</div>
 
 <nav aria-label="Main">
  <b>CYBERPLAYER</b>
- <a href="#device">Device</a><a href="#music">Music</a><a href="#training">Training</a><a href="#ecosystem">Ecosystem</a>
- <a class="btn" href="#join">Get early access</a>
+ <div><a href="#device">Device</a><a href="#music">Music</a><a href="#training">Training</a><a href="#ecosystem">Ecosystem</a><a class="btn" href="#join">Get early access</a></div>
 </nav>
 
-<header class="hero">
+<header id="hero">
  <div class="wrap">
-  <div>
-   <div class="brand">CYBERPLAYER</div>
-   <h1>YOUR MUSIC. YOUR TRAINING. <span class="grad">ZERO DISTRACTIONS.</span></h1>
+  <div class="col">
+   <h1>YOUR MUSIC.<br>YOUR TRAINING.<br>ZERO DISTRACTIONS.</h1>
    <p class="lead">An entirely new way to experience music and workouts. Built for movement, designed for focus.</p>
-   <div class="cta"><a class="btn" href="#join">Get early access</a><a class="btn ghost" href="#device">See the device</a></div>
-  </div>
-  <div class="stage">
-   <div class="device" id="dev" role="img" aria-label="CYBERPLAYER transparent music player with LED strip">
-    <svg class="pcb" viewBox="0 0 100 180" fill="none" stroke="#8a4dff" stroke-width=".4"><path d="M10 80h30l8 10h42M10 100h20l6 8h54M20 120v30h25l8-8h30M70 70v-20h20M30 140h40"/><circle cx="40" cy="80" r="1.6"/><circle cx="90" cy="90" r="1.6"/><circle cx="53" cy="142" r="1.6"/><rect x="58" y="108" width="18" height="12" rx="2"/></svg>
-    <div class="screen"><div><b>Leg day, set 3</b>Now playing · Local library</div><div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-    <div class="wheel"></div>
-    <div class="led"></div>
-   </div>
+   <div class="cta"><a class="btn" href="#join">Get early access</a><a class="link" href="#device">See inside the device</a></div>
   </div>
  </div>
+ <div class="mark" aria-hidden="true">CYBERPLAYER</div>
 </header>
 
-<section id="device">
- <div class="wrap split">
-  <div>
+<section id="device" class="tall">
+ <div class="stick"><div class="wrap"><div class="col stage">
+  <div class="ph a">
    <h2>A music player you can see through.</h2>
-   <p class="lead">Transparent shell, visible circuitry, and a light strip you set yourself. Pick a color and the device answers.</p>
-   <div class="swatches" role="group" aria-label="LED color">LED color
-    <button class="sw" aria-label="Cyan" aria-pressed="true" data-c="#22f0ff" style="background:#22f0ff"></button>
-    <button class="sw" aria-label="Violet" aria-pressed="false" data-c="#8a4dff" style="background:#8a4dff"></button>
+   <p class="lead">A transparent shell with a light you set yourself. Choose the LED color and the whole page follows.</p>
+   <div class="leds" role="group" aria-label="LED color">LED
+    <button class="sw" aria-label="Cyan" aria-pressed="true" data-c="#19e6ff" style="background:#19e6ff"></button>
+    <button class="sw" aria-label="Violet" aria-pressed="false" data-c="#9b5cff" style="background:#9b5cff"></button>
     <button class="sw" aria-label="Magenta" aria-pressed="false" data-c="#ff3fb4" style="background:#ff3fb4"></button>
-    <button class="sw" aria-label="Electric blue" aria-pressed="false" data-c="#3b6bff" style="background:#3b6bff"></button>
+    <button class="sw" aria-label="Electric blue" aria-pressed="false" data-c="#3d6bff" style="background:#3d6bff"></button>
    </div>
   </div>
-  <div class="facts">
-   <div class="glass"><h3>Transparent hardware</h3><p>A glass-like body that shows what’s inside.</p></div>
-   <div class="glass"><h3>Customizable LEDs</h3><p>Set the glow to match your mood or your gear.</p></div>
-   <div class="glass"><h3>Bluetooth headphones</h3><p>Connect wirelessly, with no phone in your hand.</p></div>
-   <div class="glass"><h3>Internal storage</h3><p>Your music lives on the device itself.</p></div>
+  <div class="ph b">
+   <h2>Everything inside, on display.</h2>
+   <p class="lead">Internal storage for your music and a Bluetooth link to your headphones sit on the board, visible through the glass.</p>
   </div>
- </div>
+ </div></div></div>
 </section>
 
 <section id="music">
- <div class="wrap split">
-  <div class="glass ad" aria-label="Playlist example">
-   <div class="track on"><span>Warm-up mix</span><small>Your library</small></div>
-   <div class="track"><span>Track you imported</span><small>Your library</small></div>
-   <div class="track skip"><span>Advertisement</span><small>Not here</small></div>
-   <div class="track"><span>Sprint intervals</span><small>Your library</small></div>
+ <div class="wrap"><div class="col r">
+  <h2>Music without interruptions.</h2>
+  <p class="lead">Your library, your favorite audio, and nothing that cuts in mid-set.</p>
+  <div class="strips" aria-label="Comparison of a workout session">
+   <div><small>Streaming on a phone, with ads</small><div class="bar" id="s1"></div></div>
+   <div><small>CYBERPLAYER</small><div class="bar" id="s2"></div></div>
   </div>
-  <div>
-   <h2>Music without interruptions.</h2>
-   <p class="lead">Your library, your favorite audio, and nothing that cuts in mid-set.</p>
-   <ul class="list">
-    <li><b>Ad-free playback.</b> No ads between your tracks.</li>
-    <li><b>Less phone, more training.</b> Playback runs on the device.</li>
-    <li><b>Organized in the app.</b> Sort music and audio into your own library.</li>
-    <li><b>Authorized imports.</b> Add audio from links to supported sources you have the right to use.</li>
-   </ul>
-  </div>
- </div>
+  <ul class="lines">
+   <li><b>Ad-free playback.</b> Your tracks play back to back.</li>
+   <li><b>Less phone, more training.</b> Playback runs on the device.</li>
+   <li><b>Authorized imports.</b> Add audio from links to supported sources you have the right to use, and organize it in the app.</li>
+  </ul>
+ </div></div>
 </section>
 
 <section id="training">
- <div class="wrap">
+ <div class="wrap"><div class="col">
   <h2>Your trainer plans it. You just move.</h2>
   <p class="lead">Everything is set up before you start, so you don’t scroll between sets.</p>
-  <div class="facts" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px">
-   <div class="glass"><h3>Trainers build routines</h3><p>Personal trainers create and organize workouts for each person.</p></div>
-   <div class="glass"><h3>You open your plan</h3><p>Your routine is waiting in the mobile app.</p></div>
-   <div class="glass"><h3>Instructions included</h3><p>Each exercise comes with clear instructions and progression.</p></div>
-   <div class="glass"><h3>Phone stays in your bag</h3><p>Prepare once, then train with CYBERPLAYER and your headphones.</p></div>
+  <div class="steps">
+   <div><span>1</span><p><b>Trainer builds the routine</b>Exercises and progression are organized for you.</p></div>
+   <div><span>2</span><p><b>You review it in the app</b>Open your plan and read each exercise’s instructions.</p></div>
+   <div><span>3</span><p><b>You train</b>Put the phone away. Headphones on, CYBERPLAYER in hand.</p></div>
   </div>
- </div>
+ </div></div>
 </section>
 
 <section id="ecosystem">
@@ -190,10 +182,8 @@ footer{padding:40px 0;text-align:center;color:var(--mute);font-size:.85rem;borde
   <h2>One ecosystem. Five parts.</h2>
   <p class="lead">Select a part to see how it connects.</p>
   <div class="eco">
-   <svg id="map" viewBox="0 0 520 440" role="group" aria-label="Ecosystem map">
-    <g id="links"></g><g id="nodes"></g>
-   </svg>
-   <div class="glass" id="info" aria-live="polite"></div>
+   <svg id="map" viewBox="0 0 560 400" role="group" aria-label="Ecosystem map"><g id="edges"></g><g id="nodes"></g></svg>
+   <div id="info" aria-live="polite"></div>
   </div>
  </div>
 </section>
@@ -207,72 +197,182 @@ footer{padding:40px 0;text-align:center;color:var(--mute);font-size:.85rem;borde
 </section>
 <footer>© 2026 CYBERPLAYER. Concept presentation. Specifications are not final.</footer>
 
-<script>
-/* LED color */
-const root=document.documentElement;
-document.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{
- root.style.setProperty('--led',b.dataset.c);
- document.querySelectorAll('.sw').forEach(x=>x.setAttribute('aria-pressed',x===b));
-});
+<script type="module">
+const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), sm=t=>t*t*(3-2*t);
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* Device tilt */
-const dev=document.getElementById('dev');
-if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&matchMedia('(hover:hover)').matches){
- addEventListener('mousemove',e=>{
-  const x=(e.clientX/innerWidth-.5),y=(e.clientY/innerHeight-.5);
-  dev.style.transform=`rotateY(${x*22}deg) rotateX(${-y*16}deg)`;
- });
-}
+/* ---------- Music comparison strips ---------- */
+const mk=(el,a)=>$(el).innerHTML=a.map(([t,w])=>`<i class="${t}" style="flex:${w}"></i>`).join('');
+mk('s1',[['',9],['ad',3],['',7],['ad',2],['',8],['ad',3],['',6],['ad',2],['',9]]);
+mk('s2',[['',9],['',7],['',8],['',6],['',9],['',7],['',8]]);
 
-/* Ecosystem map */
+/* ---------- Ecosystem map ---------- */
 const parts=[
- {id:'device',t:'CYBERPLAYER device',d:'Plays your music and shows the plan, with Bluetooth headphones and an LED strip you control.',x:260,y:60},
- {id:'app',t:'Mobile app',d:'The control room. Organize music, import audio from authorized sources, and open your workouts.',x:70,y:215},
- {id:'lib',t:'Music library',d:'Your personal collection, stored on the device and managed from the app. No ads.',x:450,y:215},
- {id:'pt',t:'Personal trainer',d:'Builds and organizes routines for each client before the session starts.',x:120,y:385},
- {id:'wo',t:'Workout routine',d:'Exercises, instructions, and progression, ready before you begin so you can train without scrolling.',x:400,y:385}
-];
-const edges=[['device','app'],['device','lib'],['app','lib'],['app','pt'],['pt','wo'],['wo','device'],['wo','app']];
-const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
-const P=Object.fromEntries(parts.map(p=>[p.id,p]));
-edges.forEach(([a,b])=>{
- const l=document.createElementNS(NS,'line');
- l.setAttribute('class','link');l.dataset.a=a;l.dataset.b=b;
- l.setAttribute('x1',P[a].x);l.setAttribute('y1',P[a].y);l.setAttribute('x2',P[b].x);l.setAttribute('y2',P[b].y);
- $('links').appendChild(l);
-});
-parts.forEach(p=>{
- const g=document.createElementNS(NS,'g');
- g.setAttribute('class','node'+(p.id==='device'?' core':''));g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',p.t);g.dataset.id=p.id;
- g.innerHTML=`<circle cx="${p.x}" cy="${p.y}" r="${p.id==='device'?54:46}"/>`+p.t.split(' ').reduce((a,w,i,arr)=>{
-  return a+`<text x="${p.x}" y="${p.y+(i-(arr.length-1)/2)*16+4}">${w}</text>`},'');
- const pick=()=>select(p.id);g.onclick=pick;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}};
- $('nodes').appendChild(g);
-});
-function select(id){
- const p=P[id];
- document.querySelectorAll('.node').forEach(n=>n.classList.toggle('active',n.dataset.id===id));
- document.querySelectorAll('.link').forEach(l=>l.classList.toggle('active',l.dataset.a===id||l.dataset.b===id));
- $('info').innerHTML=`<h3>${p.t}</h3><p>${p.d}</p>`;
-}
-select('device');
+ {id:'dev',t:'CYBERPLAYER device',d:'Plays your music and works with your Bluetooth headphones. Its LED is yours to customize.',x:280,y:200,r:62},
+ {id:'app',t:'Mobile app',d:'Organize your library, import audio from authorized sources, and open your workouts.',x:90,y:90,r:46},
+ {id:'lib',t:'Music library',d:'Your personal collection of music and audio, free of ads.',x:470,y:90,r:46},
+ {id:'pt',t:'Personal trainer',d:'Creates and organizes routines for each person.',x:90,y:310,r:46},
+ {id:'wo',t:'Workout routine',d:'Exercises, instructions, and progression, ready before you begin.',x:470,y:310,r:46}];
+const links=[['pt','wo'],['wo','app'],['app','dev'],['app','lib'],['lib','dev']];
+const NS='http://www.w3.org/2000/svg',P=Object.fromEntries(parts.map(p=>[p.id,p]));
+links.forEach(([a,b])=>{const l=document.createElementNS(NS,'line');l.setAttribute('class','edge');l.dataset.a=a;l.dataset.b=b;
+ l.setAttribute('x1',P[a].x);l.setAttribute('y1',P[a].y);l.setAttribute('x2',P[b].x);l.setAttribute('y2',P[b].y);$('edges').appendChild(l)});
+parts.forEach(p=>{const g=document.createElementNS(NS,'g');g.setAttribute('class','node');g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',p.t);g.dataset.id=p.id;
+ const w=p.t.split(' ');
+ g.innerHTML=`<circle cx="${p.x}" cy="${p.y}" r="${p.r}"/>`+w.map((s,i)=>`<text x="${p.x}" y="${p.y+(i-(w.length-1)/2)*16+4}">${s}</text>`).join('');
+ g.onclick=()=>pick(p.id);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(p.id)}};$('nodes').appendChild(g)});
+function pick(id){document.querySelectorAll('.node').forEach(n=>n.classList.toggle('active',n.dataset.id===id));
+ document.querySelectorAll('.edge').forEach(l=>l.classList.toggle('on',l.dataset.a===id||l.dataset.b===id));
+ $('info').innerHTML=`<b>${P[id].t}</b><p>${P[id].d}</p>`}
+pick('dev');
 
-/* Animated gradient background (canvas, no libraries) */
-const cv=$('bg'),cx=cv.getContext('2d');
-let W,H;const blobs=[['34,240,255',.0],['138,77,255',2.1],['59,107,255',4.2],['255,63,180',5.6]];
-function size(){const d=Math.min(devicePixelRatio||1,1.5);W=cv.width=innerWidth*d/4;H=cv.height=innerHeight*d/4}
-addEventListener('resize',size);size();
-function draw(t){
- t*=.00018;cx.fillStyle='#07080c';cx.fillRect(0,0,W,H);cx.globalCompositeOperation='lighter';
- blobs.forEach(([c,o],i)=>{
-  const x=W*(.5+.38*Math.sin(t*1.3+o)),y=H*(.5+.34*Math.cos(t+o*1.4)),r=Math.max(W,H)*(.42+.06*i%3*.1);
-  const g=cx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${c},.2)`);g.addColorStop(1,`rgba(${c},0)`);
-  cx.fillStyle=g;cx.fillRect(0,0,W,H);
- });
- cx.globalCompositeOperation='source-over';
- if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
+/* ---------- 3D ---------- */
+let THREE,RB,RE;
+try{
+ [THREE,RB,RE]=await Promise.all([import('three'),import('three/addons/geometries/RoundedBoxGeometry.js'),import('three/addons/environments/RoomEnvironment.js')]);
+}catch(e){document.documentElement.classList.add('nogl');throw e}
+
+const renderer=new THREE.WebGLRenderer({canvas:$('gl'),antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+const scene=new THREE.Scene();
+scene.environment=new THREE.PMREMGenerator(renderer).fromScene(new RE.RoomEnvironment(),.04).texture;
+scene.environmentIntensity=.6;
+const cam=new THREE.PerspectiveCamera(30,1,.1,50);cam.position.set(0,0,6.2);
+const key=new THREE.DirectionalLight(0xffffff,1.8);key.position.set(-3,4,5);
+const rimV=new THREE.DirectionalLight(0x9b5cff,2.6);rimV.position.set(4,1,-3);
+const rimC=new THREE.DirectionalLight(0x19e6ff,1.4);rimC.position.set(-4,-2,-3);
+scene.add(key,rimV,rimC);
+
+const pivot=new THREE.Group(),dev=new THREE.Group();pivot.add(dev);scene.add(pivot);
+const led=new THREE.Color('#19e6ff');
+
+/* glass body */
+const glass=new THREE.MeshPhysicalMaterial({color:0xe6f2ff,roughness:.05,transmission:1,thickness:.55,ior:1.5,clearcoat:1,clearcoatRoughness:.04,attenuationColor:new THREE.Color(0x8fdcff),attenuationDistance:2.4,envMapIntensity:1.5});
+dev.add(new THREE.Mesh(new RB.RoundedBoxGeometry(1,1.75,.17,10,.13),glass));
+
+/* materials */
+const metal=new THREE.MeshStandardMaterial({color:0x1a1d24,metalness:.95,roughness:.28});
+const ledBasic=new THREE.MeshBasicMaterial({color:led.clone().multiplyScalar(2.4),toneMapped:false});
+const pcbTex=(()=>{const c=document.createElement('canvas');c.width=512;c.height=1024;const x=c.getContext('2d');
+ x.fillStyle='#000';x.fillRect(0,0,512,1024);x.strokeStyle=x.fillStyle='#fff';x.lineWidth=3;let s=7;const r=()=>(s=s*16807%2147483647)/2147483647;
+ for(let i=0;i<52;i++){let a=Math.floor(r()*16)*32+16,b=Math.floor(r()*32)*32+16;x.beginPath();x.moveTo(a,b);
+  for(let k=0;k<3;k++){const d=r(),l=(1+Math.floor(r()*4))*32;if(d<.4)a+=l*(r()<.5?-1:1);else if(d<.8)b+=l*(r()<.5?-1:1);else{a+=l/2;b+=l/2}
+   a=clamp(a,16,496);b=clamp(b,16,1008);x.lineTo(a,b)}x.stroke();x.beginPath();x.arc(a,b,6,0,7);x.fill()}
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t})();
+const pcbMat=new THREE.MeshStandardMaterial({color:0x0b0e13,metalness:.7,roughness:.35,emissive:led,emissiveMap:pcbTex,emissiveIntensity:.9});
+const add=(g,m,x,y,z)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,z);dev.add(o);return o};
+const box=(w,h,d,r)=>new RB.RoundedBoxGeometry(w,h,d,3,r);
+
+add(new THREE.PlaneGeometry(.88,1.55),pcbMat,0,0,0);
+/* back side components (visible from behind) */
+add(box(.28,.2,.03,.01),metal,.12,.28,-.032);           /* storage */
+add(box(.16,.16,.026,.01),metal,-.22,.1,-.03);
+add(box(.62,.46,.05,.02),new THREE.MeshStandardMaterial({color:0x22262e,metalness:.8,roughness:.4}),0,-.42,-.045);
+add(new THREE.TorusGeometry(.075,.005,8,32),ledBasic,.3,.64,-.02);  /* bluetooth */
+add(new THREE.TorusGeometry(.12,.005,8,32),ledBasic,.3,.64,-.02);
+/* front side components */
+add(box(.12,.12,.025,.008),metal,-.3,-.1,.02);
+/* side buttons */
+add(box(.03,.2,.05,.01),metal,.515,.36,0);add(box(.03,.2,.05,.01),metal,.515,.1,0);add(box(.03,.14,.05,.01),metal,-.515,.3,0);
+/* LED: bottom + both edges */
+add(box(.84,.016,.02,.006),ledBasic,0,-.8,0);
+add(box(.012,1.3,.02,.005),ledBasic,-.45,.05,0);add(box(.012,1.3,.02,.005),ledBasic,.45,.05,0);
+const ledLight=new THREE.PointLight(led,1.8,4,2);ledLight.position.set(0,-.7,.3);dev.add(ledLight);
+/* wheel */
+add(new THREE.RingGeometry(.17,.27,64),metal,0,-.42,.06);
+add(new THREE.TorusGeometry(.275,.006,8,64),ledBasic,0,-.42,.062);
+add(new THREE.CircleGeometry(.11,48),new THREE.MeshStandardMaterial({color:0x2a2e38,metalness:.9,roughness:.2}),0,-.42,.062);
+
+/* screen texture */
+const sc=document.createElement('canvas');sc.width=512;sc.height=448;const sx=sc.getContext('2d');
+const stex=new THREE.CanvasTexture(sc);stex.colorSpace=THREE.SRGBColorSpace;
+const FF='Archivo, Helvetica, Arial, sans-serif';
+function drawScreen(t){
+ sx.fillStyle='#04060a';sx.fillRect(0,0,512,448);
+ sx.fillStyle='#8f98a8';sx.font=`500 22px ${FF}`;sx.fillText('Now playing',32,52);
+ sx.fillStyle='#fff';sx.font=`700 38px ${FF}`;sx.fillText('Leg day · set 3 of 4',32,104);
+ const n=22,bw=448/n,c='#'+led.getHexString();sx.fillStyle=c;
+ for(let i=0;i<n;i++){const h=24+(reduce?.5:Math.sin(t*3+i*.7)*.5+.5)*(.55+.45*Math.sin(i*1.3))*150;sx.fillRect(32+i*bw,330-h,bw-5,h)}
+ sx.fillStyle='#222831';sx.fillRect(32,362,448,6);sx.fillStyle=c;sx.fillRect(32,362,448*.38,6);
+ sx.fillStyle='#8f98a8';sx.font=`500 20px ${FF}`;sx.fillText('Headphones connected',32,414);sx.textAlign='right';sx.fillText('Your library',480,414);sx.textAlign='left';
+ stex.needsUpdate=true}
+drawScreen(0);
+add(box(.76,.66,.012,.03),new THREE.MeshStandardMaterial({color:0x050608,metalness:.5,roughness:.3}),0,.43,.058);
+add(new THREE.PlaneGeometry(.7,.61),new THREE.MeshBasicMaterial({map:stex,toneMapped:false}),0,.43,.066);
+
+/* ---------- LED color ---------- */
+function setLed(hex){
+ led.set(hex);ledBasic.color.copy(led).multiplyScalar(2.4);pcbMat.emissive.copy(led);ledLight.color.copy(led);
+ document.documentElement.style.setProperty('--led',hex);
+ document.querySelectorAll('.sw').forEach(b=>b.setAttribute('aria-pressed',b.dataset.c===hex));drawScreen(0)}
+document.querySelectorAll('.sw').forEach(b=>b.onclick=()=>setLed(b.dataset.c));
+
+/* ---------- Scroll choreography ---------- */
+const narrow=()=>innerWidth<860;
+const PI=Math.PI;
+const KF=[ /* [section id, position inside section, pose] */
+ ['hero',.5,{x:.95,y:-.1,ry:-.45,rx:.06,s:1.2}],
+ ['device',.12,{x:1.2,y:0,ry:.5,rx:0,s:1.15}],
+ ['device',.7,{x:1.2,y:0,ry:PI+.5,rx:0,s:1.15}],
+ ['music',.5,{x:-1.25,y:0,ry:2*PI+.9,rx:.08,s:1.05}],
+ ['training',.5,{x:1.25,y:0,ry:2*PI-.7,rx:-.05,s:1.05}],
+ ['ecosystem',.5,{x:0,y:-3.6,ry:2*PI,rx:0,s:.8}],
+ ['join',.3,{x:0,y:.55,ry:4*PI+.3,rx:.03,s:1.05}]];
+let marks=[],devSec={top:0,h:1};
+function layout(){
+ marks=KF.map(([id,at,p])=>{const e=$(id);return{y:e.offsetTop+at*e.offsetHeight,p}});
+ const d=$('device');devSec={top:d.offsetTop,h:d.offsetHeight};
+ renderer.setSize(innerWidth,innerHeight,false);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+addEventListener('resize',layout);addEventListener('load',layout);layout();
+
+const keys=['x','y','ry','rx','s'],S={x:.95,y:-.1,ry:-.45,rx:.06,s:1.2};
+function target(m){
+ let i=0;while(i<marks.length-1&&m>=marks[i+1].y)i++;
+ const a=marks[i],b=marks[Math.min(i+1,marks.length-1)],t=b.y===a.y?0:sm(clamp((m-a.y)/(b.y-a.y),0,1));
+ const o={};keys.forEach(k=>o[k]=a.p[k]+(b.p[k]-a.p[k])*t);
+ if(narrow()){o.x=0;o.s*=.78;o.y+=(o.y>-2?(i===0&&m<a.y+400?-.75:.2):0)}
+ return o}
+let mx=0,my=0;
+if(matchMedia('(hover:hover)').matches)addEventListener('mousemove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+
+/* callouts */
+const TAGS=[
+ {side:'front',a:[0,-.8,.01],dx:-150,dy:90,t:'Customizable LED',d:'Choose the glow that suits you.'},
+ {side:'front',a:[.27,-.42,.062],dx:150,dy:90,t:'Physical controls',d:'Control playback without the phone.'},
+ {side:'front',a:[.3,.62,.066],dx:150,dy:-60,t:'Display',d:'See what is playing at a glance.'},
+ {side:'back',a:[.12,.28,-.05],dx:-170,dy:-70,t:'Internal storage',d:'Your music lives on the device.'},
+ {side:'back',a:[.3,.64,-.03],dx:170,dy:-60,t:'Bluetooth',d:'Connect your wireless headphones.'}];
+const svg=$('lines'),vv=new THREE.Vector3();
+TAGS.forEach(t=>{
+ t.el=document.createElement('div');t.el.className='tag'+(t.dx<0?' l':'');t.el.innerHTML=`<b>${t.t}</b>${t.d}`;document.body.appendChild(t.el);
+ t.ln=document.createElementNS(NS,'line');t.dot=document.createElementNS(NS,'circle');t.dot.setAttribute('r',3.5);svg.append(t.ln,t.dot)});
+
+const clock=new THREE.Clock();let frame=0;
+function loop(){
+ requestAnimationFrame(loop);
+ const time=clock.getElapsedTime(),m=scrollY+innerHeight/2,T=target(m),k=reduce?1:.085;
+ keys.forEach(q=>S[q]+=(T[q]-S[q])*k);
+ const idle=reduce?0:1;
+ pivot.position.set(S.x,S.y+Math.sin(time*.9)*.03*idle,0);
+ pivot.scale.setScalar(S.s);
+ pivot.rotation.set(S.rx+my*.1,S.ry+Math.sin(time*.6)*.04*idle+mx*.2,0);
+ pivot.updateMatrixWorld(true);
+ const f=Math.cos(S.ry);document.body.classList.toggle('back',f<0&&m>devSec.top&&m<devSec.top+devSec.h);
+ if(!reduce&&frame++%2===0)drawScreen(time);
+ /* callouts */
+ const dw=sm(clamp((m-devSec.top)/(devSec.h*.12),0,1))*sm(clamp((devSec.top+devSec.h-m)/(devSec.h*.12),0,1));
+ TAGS.forEach(t=>{
+  vv.set(...t.a);dev.localToWorld(vv);vv.project(cam);
+  const ax=(vv.x*.5+.5)*innerWidth,ay=(-vv.y*.5+.5)*innerHeight;
+  const al=narrow()?0:clamp(((t.side==='front'?f:-f)-.5)*4,0,1)*dw;
+  const w=t.el.offsetWidth,h=t.el.offsetHeight,ex=ax+t.dx,ey=ay+t.dy;
+  t.el.style.opacity=al;t.el.style.transform=`translate(${t.dx<0?ex-w:ex}px,${ey-h}px)`;
+  t.ln.setAttribute('x1',ax);t.ln.setAttribute('y1',ay);t.ln.setAttribute('x2',ex);t.ln.setAttribute('y2',ey);t.dot.setAttribute('cx',ax);t.dot.setAttribute('cy',ay);
+  t.ln.style.opacity=t.dot.style.opacity=al});
+ $('glow').style.setProperty('--gx',((S.x*.17+.5)*100+(narrow()?0:0))+'%');
+ renderer.render(scene,cam)}
+loop();
 </script>
 </body>
 </html>
