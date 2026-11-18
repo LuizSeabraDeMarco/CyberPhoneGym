@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CYBERPLAYER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07080c;--graphite:#14161d;--cyan:#22f0ff;--blue:#3b6bff;--violet:#8a4dff;--magenta:#ff3fb4;--text:#e9edf5;--mute:#8b93a7;--led:#22f0ff;
+--glass:rgba(255,255,255,.055);--edge:rgba(255,255,255,.16);
+--display:'Unbounded','Arial Black',system-ui,sans-serif;--body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font:400 1.05rem/1.65 var(--body);overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:28px;align-items:center;padding:10px 12px 10px 24px;border-radius:999px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);font-size:.9rem;white-space:nowrap}
+nav b{font:800 .85rem var(--display);letter-spacing:.12em}
+nav a{text-decoration:none;color:var(--mute);transition:color .2s}nav a:hover{color:var(--text)}
+.btn{display:inline-block;text-decoration:none;font:600 .9rem var(--body);padding:14px 28px;border-radius:999px;color:#04060a;background:linear-gradient(120deg,var(--cyan),var(--blue) 60%,var(--violet));box-shadow:0 0 32px rgba(34,240,255,.35);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(34,240,255,.6)}
+nav .btn{padding:9px 20px;color:#04060a}
+.ghost{background:var(--glass);color:var(--text);box-shadow:none;border:1px solid var(--edge)}
+h1,h2,h3{font-family:var(--display);line-height:1.08;font-weight:800}
+h1{font-size:clamp(2.1rem,5.4vw,4.4rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,3.6vw,2.7rem);letter-spacing:-.015em;margin-bottom:20px}
+h3{font-size:1.05rem;font-weight:600;margin-bottom:8px}
+p.lead{color:var(--mute);max-width:52ch;font-size:1.15rem}
+section{padding:120px 0;position:relative}
+.grad{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;align-items:center;padding:120px 0 60px}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+.brand{font:800 clamp(.8rem,1.6vw,1rem) var(--display);letter-spacing:.5em;color:var(--cyan);margin-bottom:22px}
+.hero p.lead{margin:24px 0 36px}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+
+/* DEVICE */
+.stage{display:grid;place-items:center;perspective:1100px}
+.device{position:relative;width:min(300px,70vw);aspect-ratio:9/16;border-radius:44px;background:linear-gradient(155deg,rgba(255,255,255,.17),rgba(255,255,255,.03) 45%,rgba(138,77,255,.12));border:1px solid var(--edge);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 6px rgba(255,255,255,.03),inset 0 1px 0 rgba(255,255,255,.5),0 40px 90px rgba(0,0,0,.7),0 0 80px color-mix(in srgb,var(--led) 35%,transparent);transform-style:preserve-3d;transition:transform .15s ease-out,box-shadow .4s;animation:float 6s ease-in-out infinite}
+@keyframes float{50%{translate:0 -12px}}
+.device::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.22) 45%,transparent 58%);mix-blend-mode:screen;pointer-events:none;animation:sheen 7s linear infinite}
+@keyframes sheen{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
+.device svg.pcb{position:absolute;inset:26px;width:calc(100% - 52px);height:calc(100% - 52px);opacity:.5}
+.screen{position:absolute;left:22px;right:22px;top:26px;height:38%;border-radius:26px;background:rgba(4,8,14,.78);border:1px solid var(--edge);padding:18px;display:flex;flex-direction:column;justify-content:space-between;font-size:.72rem;color:var(--mute)}
+.screen b{display:block;color:var(--text);font:600 .95rem var(--display)}
+.bars{display:flex;gap:4px;align-items:flex-end;height:42px}
+.bars i{flex:1;background:var(--led);border-radius:2px;animation:eq 1.1s ease-in-out infinite alternate;box-shadow:0 0 10px var(--led)}
+.bars i:nth-child(2n){animation-delay:-.4s}.bars i:nth-child(3n){animation-delay:-.7s}.bars i:nth-child(5n){animation-delay:-.2s}
+@keyframes eq{from{height:15%}to{height:100%}}
+.wheel{position:absolute;left:50%;bottom:11%;width:46%;aspect-ratio:1;translate:-50% 0;border-radius:50%;border:1px solid var(--edge);background:radial-gradient(circle,rgba(255,255,255,.08),transparent 70%);display:grid;place-items:center}
+.wheel::after{content:"";width:34%;aspect-ratio:1;border-radius:50%;border:1px solid var(--edge);background:rgba(255,255,255,.05)}
+.led{position:absolute;left:14px;right:14px;bottom:14px;height:4px;border-radius:4px;background:var(--led);box-shadow:0 0 16px var(--led),0 0 40px var(--led);transition:background .4s,box-shadow .4s}
+.swatches{display:flex;gap:12px;margin-top:34px;align-items:center;color:var(--mute);font-size:.85rem}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:transform .2s}
+.sw:hover,.sw[aria-pressed=true]{transform:scale(1.2);border-color:#fff}
+
+/* GLASS */
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:28px;padding:32px;backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.facts .glass{padding:22px}
+.facts p{color:var(--mute);font-size:.92rem;line-height:1.5}
+.list{list-style:none;padding:0;display:grid;gap:14px;margin-top:28px}
+.list li{padding-left:28px;position:relative;color:var(--mute)}
+.list li::before{content:"";position:absolute;left:0;top:.6em;width:12px;height:2px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.list b{color:var(--text);font-weight:500}
+.ad{display:flex;flex-direction:column;gap:12px}
+.track{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--edge);font-size:.95rem}
+.track small{color:var(--mute)}
+.track.skip{opacity:.4;text-decoration:line-through;border-style:dashed}
+.track.on{border-color:var(--cyan);box-shadow:0 0 24px rgba(34,240,255,.2)}
+
+/* ECOSYSTEM */
+.eco{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;margin-top:40px}
+#map{width:100%;height:auto;overflow:visible}
+.node{cursor:pointer}
+.node circle{fill:rgba(20,22,29,.85);stroke:rgba(255,255,255,.25);stroke-width:1.5;transition:stroke .25s,filter .25s}
+.node text{fill:var(--text);font:500 13px var(--body);text-anchor:middle;pointer-events:none}
+.node.active circle,.node:hover circle,.node:focus-visible circle{stroke:var(--cyan);filter:drop-shadow(0 0 12px var(--cyan))}
+.link{stroke:rgba(255,255,255,.18);stroke-width:1.5;stroke-dasharray:4 6;animation:dash 2s linear infinite}
+.link.active{stroke:var(--cyan)}
+@keyframes dash{to{stroke-dashoffset:-20}}
+.core circle{stroke:var(--violet);fill:rgba(138,77,255,.15)}
+#info{min-height:210px}
+#info p{color:var(--mute)}
+
+/* FINAL */
+.final{text-align:center;padding:160px 0}
+.final p.lead{margin:0 auto 40px}
+footer{padding:40px 0;text-align:center;color:var(--mute);font-size:.85rem;border-top:1px solid rgba(255,255,255,.08)}
+
+@media(max-width:860px){
+ nav a:not(.btn){display:none}nav{gap:16px}
+ .hero .wrap,.split,.eco{grid-template-columns:1fr}
+ section{padding:80px 0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<nav aria-label="Main">
+ <b>CYBERPLAYER</b>
+ <a href="#device">Device</a><a href="#music">Music</a><a href="#training">Training</a><a href="#ecosystem">Ecosystem</a>
+ <a class="btn" href="#join">Get early access</a>
+</nav>
+
+<header class="hero">
+ <div class="wrap">
+  <div>
+   <div class="brand">CYBERPLAYER</div>
+   <h1>YOUR MUSIC. YOUR TRAINING. <span class="grad">ZERO DISTRACTIONS.</span></h1>
+   <p class="lead">An entirely new way to experience music and workouts. Built for movement, designed for focus.</p>
+   <div class="cta"><a class="btn" href="#join">Get early access</a><a class="btn ghost" href="#device">See the device</a></div>
+  </div>
+  <div class="stage">
+   <div class="device" id="dev" role="img" aria-label="CYBERPLAYER transparent music player with LED strip">
+    <svg class="pcb" viewBox="0 0 100 180" fill="none" stroke="#8a4dff" stroke-width=".4"><path d="M10 80h30l8 10h42M10 100h20l6 8h54M20 120v30h25l8-8h30M70 70v-20h20M30 140h40"/><circle cx="40" cy="80" r="1.6"/><circle cx="90" cy="90" r="1.6"/><circle cx="53" cy="142" r="1.6"/><rect x="58" y="108" width="18" height="12" rx="2"/></svg>
+    <div class="screen"><div><b>Leg day, set 3</b>Now playing · Local library</div><div class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="wheel"></div>
+    <div class="led"></div>
+   </div>
+  </div>
+ </div>
+</header>
+
+<section id="device">
+ <div class="wrap split">
+  <div>
+   <h2>A music player you can see through.</h2>
+   <p class="lead">Transparent shell, visible circuitry, and a light strip you set yourself. Pick a color and the device answers.</p>
+   <div class="swatches" role="group" aria-label="LED color">LED color
+    <button class="sw" aria-label="Cyan" aria-pressed="true" data-c="#22f0ff" style="background:#22f0ff"></button>
+    <button class="sw" aria-label="Violet" aria-pressed="false" data-c="#8a4dff" style="background:#8a4dff"></button>
+    <button class="sw" aria-label="Magenta" aria-pressed="false" data-c="#ff3fb4" style="background:#ff3fb4"></button>
+    <button class="sw" aria-label="Electric blue" aria-pressed="false" data-c="#3b6bff" style="background:#3b6bff"></button>
+   </div>
+  </div>
+  <div class="facts">
+   <div class="glass"><h3>Transparent hardware</h3><p>A glass-like body that shows what’s inside.</p></div>
+   <div class="glass"><h3>Customizable LEDs</h3><p>Set the glow to match your mood or your gear.</p></div>
+   <div class="glass"><h3>Bluetooth headphones</h3><p>Connect wirelessly, with no phone in your hand.</p></div>
+   <div class="glass"><h3>Internal storage</h3><p>Your music lives on the device itself.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="music">
+ <div class="wrap split">
+  <div class="glass ad" aria-label="Playlist example">
+   <div class="track on"><span>Warm-up mix</span><small>Your library</small></div>
+   <div class="track"><span>Track you imported</span><small>Your library</small></div>
+   <div class="track skip"><span>Advertisement</span><small>Not here</small></div>
+   <div class="track"><span>Sprint intervals</span><small>Your library</small></div>
+  </div>
+  <div>
+   <h2>Music without interruptions.</h2>
+   <p class="lead">Your library, your favorite audio, and nothing that cuts in mid-set.</p>
+   <ul class="list">
+    <li><b>Ad-free playback.</b> No ads between your tracks.</li>
+    <li><b>Less phone, more training.</b> Playback runs on the device.</li>
+    <li><b>Organized in the app.</b> Sort music and audio into your own library.</li>
+    <li><b>Authorized imports.</b> Add audio from links to supported sources you have the right to use.</li>
+   </ul>
+  </div>
+ </div>
+</section>
+
+<section id="training">
+ <div class="wrap">
+  <h2>Your trainer plans it. You just move.</h2>
+  <p class="lead">Everything is set up before you start, so you don’t scroll between sets.</p>
+  <div class="facts" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:44px">
+   <div class="glass"><h3>Trainers build routines</h3><p>Personal trainers create and organize workouts for each person.</p></div>
+   <div class="glass"><h3>You open your plan</h3><p>Your routine is waiting in the mobile app.</p></div>
+   <div class="glass"><h3>Instructions included</h3><p>Each exercise comes with clear instructions and progression.</p></div>
+   <div class="glass"><h3>Phone stays in your bag</h3><p>Prepare once, then train with CYBERPLAYER and your headphones.</p></div>
+  </div>
+ </div>
+</section>
+
+<section id="ecosystem">
+ <div class="wrap">
+  <h2>One ecosystem. Five parts.</h2>
+  <p class="lead">Select a part to see how it connects.</p>
+  <div class="eco">
+   <svg id="map" viewBox="0 0 520 440" role="group" aria-label="Ecosystem map">
+    <g id="links"></g><g id="nodes"></g>
+   </svg>
+   <div class="glass" id="info" aria-live="polite"></div>
+  </div>
+ </div>
+</section>
+
+<section class="final" id="join">
+ <div class="wrap">
+  <h2>Not just another music player.</h2>
+  <p class="lead">A dedicated ecosystem for people who want to stay focused while training.</p>
+  <a class="btn" href="mailto:hello@cyberplayer.example?subject=Early%20access">Get early access</a>
+ </div>
+</section>
+<footer>© 2026 CYBERPLAYER. Concept presentation. Specifications are not final.</footer>
+
+<script>
+/* LED color */
+const root=document.documentElement;
+document.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{
+ root.style.setProperty('--led',b.dataset.c);
+ document.querySelectorAll('.sw').forEach(x=>x.setAttribute('aria-pressed',x===b));
+});
+
+/* Device tilt */
+const dev=document.getElementById('dev');
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&matchMedia('(hover:hover)').matches){
+ addEventListener('mousemove',e=>{
+  const x=(e.clientX/innerWidth-.5),y=(e.clientY/innerHeight-.5);
+  dev.style.transform=`rotateY(${x*22}deg) rotateX(${-y*16}deg)`;
+ });
+}
+
+/* Ecosystem map */
+const parts=[
+ {id:'device',t:'CYBERPLAYER device',d:'Plays your music and shows the plan, with Bluetooth headphones and an LED strip you control.',x:260,y:60},
+ {id:'app',t:'Mobile app',d:'The control room. Organize music, import audio from authorized sources, and open your workouts.',x:70,y:215},
+ {id:'lib',t:'Music library',d:'Your personal collection, stored on the device and managed from the app. No ads.',x:450,y:215},
+ {id:'pt',t:'Personal trainer',d:'Builds and organizes routines for each client before the session starts.',x:120,y:385},
+ {id:'wo',t:'Workout routine',d:'Exercises, instructions, and progression, ready before you begin so you can train without scrolling.',x:400,y:385}
+];
+const edges=[['device','app'],['device','lib'],['app','lib'],['app','pt'],['pt','wo'],['wo','device'],['wo','app']];
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
+const P=Object.fromEntries(parts.map(p=>[p.id,p]));
+edges.forEach(([a,b])=>{
+ const l=document.createElementNS(NS,'line');
+ l.setAttribute('class','link');l.dataset.a=a;l.dataset.b=b;
+ l.setAttribute('x1',P[a].x);l.setAttribute('y1',P[a].y);l.setAttribute('x2',P[b].x);l.setAttribute('y2',P[b].y);
+ $('links').appendChild(l);
+});
+parts.forEach(p=>{
+ const g=document.createElementNS(NS,'g');
+ g.setAttribute('class','node'+(p.id==='device'?' core':''));g.setAttribute('tabindex','0');g.setAttribute('role','button');g.setAttribute('aria-label',p.t);g.dataset.id=p.id;
+ g.innerHTML=`<circle cx="${p.x}" cy="${p.y}" r="${p.id==='device'?54:46}"/>`+p.t.split(' ').reduce((a,w,i,arr)=>{
+  return a+`<text x="${p.x}" y="${p.y+(i-(arr.length-1)/2)*16+4}">${w}</text>`},'');
+ const pick=()=>select(p.id);g.onclick=pick;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}};
+ $('nodes').appendChild(g);
+});
+function select(id){
+ const p=P[id];
+ document.querySelectorAll('.node').forEach(n=>n.classList.toggle('active',n.dataset.id===id));
+ document.querySelectorAll('.link').forEach(l=>l.classList.toggle('active',l.dataset.a===id||l.dataset.b===id));
+ $('info').innerHTML=`<h3>${p.t}</h3><p>${p.d}</p>`;
+}
+select('device');
+
+/* Animated gradient background (canvas, no libraries) */
+const cv=$('bg'),cx=cv.getContext('2d');
+let W,H;const blobs=[['34,240,255',.0],['138,77,255',2.1],['59,107,255',4.2],['255,63,180',5.6]];
+function size(){const d=Math.min(devicePixelRatio||1,1.5);W=cv.width=innerWidth*d/4;H=cv.height=innerHeight*d/4}
+addEventListener('resize',size);size();
+function draw(t){
+ t*=.00018;cx.fillStyle='#07080c';cx.fillRect(0,0,W,H);cx.globalCompositeOperation='lighter';
+ blobs.forEach(([c,o],i)=>{
+  const x=W*(.5+.38*Math.sin(t*1.3+o)),y=H*(.5+.34*Math.cos(t+o*1.4)),r=Math.max(W,H)*(.42+.06*i%3*.1);
+  const g=cx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,`rgba(${c},.2)`);g.addColorStop(1,`rgba(${c},0)`);
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+ });
+ cx.globalCompositeOperation='source-over';
+ if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
